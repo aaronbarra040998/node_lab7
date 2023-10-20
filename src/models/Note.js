@@ -14,6 +14,10 @@ const NoteSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    publicationDate: {
+      type: Date, // Agrega el campo de fecha de publicación de tipo Date
+      default: Date.now, // Puedes establecer un valor predeterminado si lo deseas
+    },
   },
   {
     timestamps: true,

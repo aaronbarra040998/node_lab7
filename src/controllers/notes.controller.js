@@ -3,7 +3,8 @@ import Note from "../models/Note.js";
 export const renderNoteForm = (req, res) => res.render("notes/new-note");
 
 export const createNewNote = async (req, res) => {
-  const { title, description } = req.body;
+  const { title, description, publicationDate } = req.body; // Asegúrate de que la fecha se envíe en el cuerpo de la solicitud.
+
   const errors = [];
   if (!title) {
     errors.push({ text: "Please Write a Title." });
@@ -11,20 +12,33 @@ export const createNewNote = async (req, res) => {
   if (!description) {
     errors.push({ text: "Please Write a Description" });
   }
-  if (errors.length > 0)
+
+  if (errors.length > 0) {
     return res.render("notes/new-note", {
       errors,
       title,
       description,
     });
+  }
 
-  const newNote = new Note({ title, description });
+  const newNote = new Note({
+    title,
+    description,
+    publicationDate, // Asigna la fecha de publicación desde la solicitud.
+  });
+
   newNote.user = req.user.id;
-  await newNote.save();
-  req.flash("success_msg", "Note Added Successfully");
-  res.redirect("/notes");
-};
 
+  try {
+    await newNote.save();
+    req.flash("success_msg", "Note Added Successfully");
+    res.redirect("/notes");
+  } catch (error) {
+    console.error(error);
+    req.flash("error_msg", "An error occurred while adding the note.");
+    res.redirect("/notes");
+  }
+};
 export const renderNotes = async (req, res) => {
   const notes = await Note.find({ user: req.user.id })
     .sort({ date: "desc" })
