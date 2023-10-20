@@ -1,4 +1,5 @@
 import Note from "../models/Note.js";
+import { format } from "date-fns"; // Importa la biblioteca date-fns solo una vez al comienzo del archivo
 
 export const renderNoteForm = (req, res) => res.render("notes/new-note");
 
@@ -39,10 +40,18 @@ export const createNewNote = async (req, res) => {
     res.redirect("/notes");
   }
 };
+
 export const renderNotes = async (req, res) => {
   const notes = await Note.find({ user: req.user.id })
-    .sort({ date: "desc" })
+    .select('title description createdAt')
+    .sort({ createdAt: "desc" })
     .lean();
+
+  // Formatea la fecha de creación en el formato deseado (año-mes-día)
+  notes.forEach((note) => {
+    note.createdAt = format(note.createdAt, "yyyy-MM-dd");
+  });
+
   res.render("notes/all-notes", { notes });
 };
 
