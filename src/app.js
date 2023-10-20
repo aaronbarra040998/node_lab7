@@ -30,6 +30,10 @@ const hbs = exphbs.create({
   layoutsDir: join(app.get("views"), "layouts"),
   partialsDir: join(app.get("views"), "partials"),
   extname: ".hbs",
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+  },
 });
 app.engine(".hbs", hbs.engine);
 app.set("view engine", ".hbs");

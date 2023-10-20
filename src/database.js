@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 import { MONGODB_URI } from "./config.js";
 
+// Establecer strictQuery en falso
+mongoose.set('strictQuery', false);
+
 try {
   const db = await mongoose.connect(MONGODB_URI);
   console.log("Connected to ", db.connection.name);
@@ -15,4 +18,3 @@ mongoose.connection.on("connected", () => {
 mongoose.connection.on("disconnected", () => {
   console.log("Mongoose is disconnected");
 });
-
